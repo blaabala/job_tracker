@@ -4,13 +4,15 @@ import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import DashboardView from '../views/DashboardView.vue';
 import ApplicationsView from '../views/ApplicationsView.vue';
+import NotFoundView from '@/views/NotFoundView.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
-  { path: '/login', component: LoginView, meta: { guestOnly: true } },
-  { path: '/register', component: RegisterView, meta: { guestOnly: true } },
-  { path: '/dashboard', component: DashboardView, meta: { requiresAuth: true } },
-  { path: '/applications', component: ApplicationsView, meta: { requiresAuth: true } }
+  { path: '/login', component: LoginView, meta: { guestOnly: true, title: 'Login' } },
+  { path: '/register', component: RegisterView, meta: { guestOnly: true, title: 'Register' } },
+  { path: '/dashboard', component: DashboardView, meta: { requiresAuth: true, title: 'Dashboard' } },
+  { path: '/applications', component: ApplicationsView, meta: { requiresAuth: true, title: 'My Applications' } },
+  { path: '/:pathMatch(.*)*', component: NotFoundView, meta: { title: '404' } }
 ];
 
 const router = createRouter({
@@ -22,6 +24,7 @@ const router = createRouter({
 router.beforeEach((to, from) => {
   const token = localStorage.getItem('token');
 
+  document.title = `${to.meta.title || 'Job Tracker'} | Job Tracker`;
   if (to.meta.requiresAuth && !token) {
     return '/login';
   } else if (to.meta.guestOnly && token) {

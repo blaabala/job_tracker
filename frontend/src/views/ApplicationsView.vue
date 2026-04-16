@@ -28,11 +28,14 @@
 
       <!-- Table -->
       <div class="table-wrapper">
-        <table v-if="filteredApplications.length > 0">
+        <div v-if="loading" class="empty-state">Loading...</div>
+
+        <table v-else-if="filteredApplications.length > 0">
           <thead>
             <tr>
               <th>Company</th>
               <th>Role</th>
+              <th>Job Link</th>
               <th>Location</th>
               <th>Status</th>
               <th>Date Applied</th>
@@ -44,6 +47,12 @@
             <tr v-for="app in filteredApplications" :key="app.id">
               <td>{{ app.company }}</td>
               <td>{{ app.role }}</td>
+              <td>
+                <a v-if="app.job_url" :href="app.job_url" target="_blank" class="job-link">
+                  View Job
+                </a>
+                <span v-else>-</span>
+              </td>
               <td>{{ app.location || '-' }}</td>
               <td>
                 <span :class="['badge', statusClass(app.status)]">
@@ -140,6 +149,7 @@ export default {
       filterStatus: '',
       showModal: false,
       editingId: null,
+      loading: false,
       form: {
         company: '',
         role: '',
@@ -167,11 +177,14 @@ export default {
   },
   methods: {
     async fetchApplications() {
+      this.loading = true;
       try {
         const response = await api.get('/applications');
         this.applications = response.data;
       } catch (err) {
         alert('Failed to load applications');
+      } finally {
+        this.loading = false;
       }
     },
     openModal(app = null) {
@@ -499,4 +512,15 @@ input:focus, select:focus, textarea:focus {
 
 .btn-cancel:hover { background: #e5e7eb; }
 .btn-save:hover { background: #4338ca; }
+
+.job-link {
+  color: #4f46e5;
+  font-size: 0.85rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.job-link:hover {
+  text-decoration: underline;
+}
 </style>
