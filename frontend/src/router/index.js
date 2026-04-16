@@ -19,17 +19,13 @@ const router = createRouter({
 });
 
 // Navigation Guard
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from) => {
   const token = localStorage.getItem('token');
 
   if (to.meta.requiresAuth && !token) {
-    // Trying to access protected page without token → redirect to login
-    next('/login');
+    return '/login';
   } else if (to.meta.guestOnly && token) {
-    // Already logged in, trying to access login/register → redirect to dashboard
-    next('/dashboard');
-  } else {
-    next();
+    return '/dashboard';
   }
 });
 
