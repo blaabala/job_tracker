@@ -1,7 +1,23 @@
 <template>
-  <div>Dashboard Page</div>
+  <div>
+    <NavBar />
+    <div class="page-content">
+      <h2>Dashboard</h2>
+    </div>
+  </div>
 </template>
 
 <script>
-export default { name: 'DashboardView' }
+import NavBar from '../components/NavBar.vue';
+
+export default {
+  name: 'DashboardView',
+  components: { NavBar }
+};
 </script>
+
+<style scoped>
+.page-content {
+  padding: 2rem;
+}
+</style>
